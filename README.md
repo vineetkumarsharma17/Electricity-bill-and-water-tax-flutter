@@ -1,4 +1,5 @@
 # bill_calculator
+this app is built to calculate the electricity bill for domestic and commercial connection and water tax.
 
 A new Flutter project.
 
