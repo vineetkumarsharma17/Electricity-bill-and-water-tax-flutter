@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-class MyElectricityBill extends StatefulWidget {
-  const MyElectricityBill({Key? key}) : super(key: key);
+
+class WaterTax extends StatefulWidget {
+  const WaterTax({Key? key}) : super(key: key);
 
   @override
-  _MyElectricityBillState createState() => _MyElectricityBillState();
+  _WaterTaxState createState() => _WaterTaxState();
 }
 
-class _MyElectricityBillState extends State<MyElectricityBill> {
-  String img = "assets/images/logo.jpg";
+class _WaterTaxState extends State<WaterTax> {
+  String img = "assets/images/logowater.png";
   String rs = '';
-  TextEditingController unit = new TextEditingController();
-   var ctype=null;
-  TextEditingController u = new TextEditingController();
+  var ctype=null;
+  TextEditingController are = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Electricty Bill"),
+        title: Text("Water Tax"),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -37,7 +37,7 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
                 color: Colors.blue,
                 padding: EdgeInsets.all(10),
                 width: 300,
-                child: Text("Amount:$rs", style: TextStyle(
+                child: Text("WaterTax:$rs", style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -46,10 +46,10 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
               Container(
                 padding: EdgeInsets.all(20),
                 child: TextField(
-                  controller: u,
+                  controller: are,
                   decoration: InputDecoration(
-                    hintText: "Enter no of unit",
-                    labelText: "Units",
+                    hintText: "Enter the area of home in /squarefeet",
+                    labelText: "Area",
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -59,40 +59,22 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
                 alignment: Alignment.center,
                 width: 300,
                 child: DropdownButton<String>(
-                  //elevation: 5,
-                  dropdownColor: Colors.orange,
-                  //icon: Icon(Icons.arrow_downward),
                   value: ctype,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                  items: <String>["Domestic",'Commercial',
-                    // DropdownMenuItem(
-                    //   child: Text("Select Connection Type"),
-                    //   value: "Select Connection Type",
-                    // ),
-                    // DropdownMenuItem(
-                    //   child: Text("Domestic"),
-                    //   value: "D",
-                    // ),
-                    // DropdownMenuItem(
-                    //   child: Text("Commercial"),
-                    //   value: "C",
-                    // ),
-                  ].map<DropdownMenuItem<String>>((String value){
-                    return DropdownMenuItem<String>
-                      (child: Text(value,style: TextStyle(),),
-                      value: value,
-                    );
-                  }).toList(),
-                  onChanged: (String ? value) {
+                  items: [
+                    DropdownMenuItem(child: Text("Regular"),
+                    value: "R",),
+                    DropdownMenuItem(child: Text("Commercial"),
+                      value: "C",),
+
+                  ],
+                  hint: Text("Select Home Type"),
+                  onChanged: (value){
                     setState(() {
-                      ctype = value!;
+                      ctype=value;
                       print(ctype);
-                      //Calculate();
                     });
                   },
-                hint: Text("Select"),),
+                ),
               ),
               SizedBox(height: 50,),
               Row(
@@ -102,7 +84,8 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
                     width: 100,
                     child: ElevatedButton(
                       style: ButtonStyle(
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18),
                                   side: BorderSide(color: Colors.yellow)
@@ -116,11 +99,12 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
                     width: 100,
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              side: BorderSide(color: Colors.yellow)
-                            ))
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                  side: BorderSide(color: Colors.yellow)
+                              ))
                       ),
                       onPressed: clearText,
                       child: Text("Clear"),
@@ -132,49 +116,45 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
           ),
         ),
       ),
+
+
     );
   }
 
   void Calculate() {
-    double amount=0;
-    if(u.text==''||(ctype!="Domestic"&&ctype!='Commercial')) {
+    double amount = 0;
+    if (are.text == '' || (ctype != "R" && ctype != 'C')) {
       showAlertDialog(context);
       setState(() {
-        rs = u.text;
+        rs = '';
       });
     } else {
-      int unit=int.parse(u.text.toString());
-      if(unit<=80)
-        amount=650;
-      else
-      if(ctype=='Domestic'){
-        if(unit<=100)
-          amount=unit*4.20;
-        else if(unit<=350)
-          amount=(100*4.20)+(unit-100)*7.40;
-        else if(unit<=804)
-          amount=(100*4.20)+(250*7.40)+(unit-350)*9.20;
+      int unit = int.parse(are.text.toString());
+      if (ctype == 'R') {
+        if (unit <= 700)
+          amount = unit * 20.5;
+        else if (unit <= 2000)
+          amount = (700 * 20.5) + (unit - 700) * 27.5;
+        else if (unit <= 10000)
+          amount = (700 * 20.5) + (1300 * 27.5) + (unit - 2000) * 80.4;
         else
-          amount=(100*4.20)+(250*7.40)+(453*9.20)+(unit-804)*10.80;
-      }else
-      if(ctype=='Commercial'){
-        if(unit<=100)
-          amount=unit*8.90;
-        else if(unit<=350)
-          amount=(100*8.90)+(unit-100)*10.80;
-        else if(unit<=804)
-          amount=(100*8.90)+(250*10.80)+(unit-350)*12.70;
+          amount = (700 * 20.5) + (1300 * 27.5)+ (8000 * 80.4) + (unit - 10000) * 90.40;
+      } else if (ctype == 'C') {
+        if (unit <= 700)
+          amount = unit * 40.80;
+        else if (unit <= 2000)
+          amount = (700 * 40.80) + (unit - 700) * 56.17;
+        else if (unit <= 10000)
+          amount = (700 * 40.80) + (1300 * 56.17) + (unit - 2000) * 103.18;
         else
-          amount=(100*8.90)+(250*10.80)+(453*12.70)+(unit-804)*16.40;
+          amount = (700 * 40.80) + (1300 * 56.17)+ (8000 * 103.18) + (unit - 10000) * 202.18;
       }
       setState(() {
         print(amount);
-        amount+=60;
-        rs=amount.toString();
+        rs = amount.toStringAsFixed(2);
       });
     }
   }
-
   showAlertDialog(BuildContext context) {
     // Create button
     Widget okButton = TextButton(
@@ -197,7 +177,9 @@ class _MyElectricityBillState extends State<MyElectricityBill> {
       },
     );
   }
-  void clearText(){
-    u.clear();
+
+  void clearText() {
+    are.clear();
   }
 }
+
